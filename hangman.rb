@@ -1,7 +1,3 @@
-def guessLetter(chosenWord, guess, previousGuesses)
-
-end
-
 def processGuess(chosenWord, guess, previousGuesses)
 
     if previousGuesses.include? guess
@@ -39,9 +35,6 @@ def loadDictionary(txtContent)
     wordList = Array.new
     txtContent.each {|dictionaryTerms| wordList.push(dictionaryTerms)}
     return wordList
-end
-
-def update()
 end
 
 def start()
