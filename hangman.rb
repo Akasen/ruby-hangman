@@ -1,3 +1,14 @@
+class GameStats
+    attr_accessor :chosenWord, :incorrectGuessTally, :previousGuesses, :correctGuess
+    def initialize(chosenWord, incorrectGuessTally, previousGuesses, correctGuess)
+        @chosenWord = chosenWord
+        @incorrectGuessTally = incorrectGuessTally
+        @previousGuesses = previousGuesses
+        @correctGuess = correctGuess
+        puts "Game Start!!"
+    end
+end
+
 def processGuess(chosenWord, guess, previousGuesses)
 
     if previousGuesses.include? guess
@@ -24,7 +35,7 @@ end
 def chooseWord(wordList)
     chosenWord = wordList[rand(wordList.length - 1)]
 
-    if chosenWord.length >= 5 || chosenWord <= 12
+    if chosenWord.length >= 5 && chosenWord.length <= 12
         return chosenWord
     else
         chooseWord(wordList)
@@ -41,42 +52,49 @@ def start()
     content = File.open('5desk.txt')
     wordList = loadDictionary(content)
 
-    chosenWord = chooseWord(wordList).chomp
+    #chosenWord = chooseWord(wordList).chomp
 
-    incorrectGuesses = 0
+    stats = GameStats.new(chooseWord(wordList).chomp, 0, Array.new, Array.new)
+
+    puts stats.chosenWord
+    #incorrectGuessTally = 0
 
     ##While statement
-    previousGuesses = Array.new
-    correctGuess = Array.new
-    while(true)
-        guessOutcome(chosenWord, correctGuess)
+    #previousGuesses = Array.new
+    #correctGuess = Array.new
+
+    while(stats.incorrectGuessTally <= 8)
+        guessOutcome(stats.chosenWord, stats.correctGuess)
         puts ""
-        puts "You have made #{incorrectGuesses} incorrect guesses"
+        puts "You have made #{stats.incorrectGuessTally} incorrect guesses"
         puts "Guess a letter"
         guess = gets.chomp
 
         #Process user choice
-        guessResult = processGuess(chosenWord, guess, previousGuesses)
+        guessResult = processGuess(stats.chosenWord, guess, stats.previousGuesses)
 
         case guessResult
         when 0
             puts "Correct Guess"
-            correctGuess.push(guess)
+            stats.correctGuess.push(guess)
         when 1
             puts "Wrong Guess"
-            incorrectGuesses += 1
+            stats.incorrectGuessTally += 1
         when 2
             puts "You already guessed that letter"
         end
 
-        if !previousGuesses.include? guess
-            previousGuesses.push(guess)
-        end
-        
-        
+        if !stats.previousGuesses.include? guess
+            stats.previousGuesses.push(guess)
+        end               
+    end
+
+    if stats.incorrectGuessTally >= 8
+        puts "The word was #{stats.chosenWord}"
+    else
+        puts "You won!"
     end
 
 end
-
 
 start()
