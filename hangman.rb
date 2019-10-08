@@ -23,13 +23,17 @@ def processGuess(chosenWord, guess, previousGuesses)
 end
 
 def guessOutcome(chosenWord, correctGuess)
+    winCheck = Array.new
     chosenWord.each_char do |letter|
         if correctGuess.include? letter
             print letter
+            winCheck.push(true)
         else
             print "_"
+            winCheck.push(false)
         end
     end
+    return winCheck
 end
 
 def chooseWord(wordList)
@@ -64,7 +68,7 @@ def start()
     #correctGuess = Array.new
 
     while(stats.incorrectGuessTally <= 8)
-        guessOutcome(stats.chosenWord, stats.correctGuess)
+        winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
         puts ""
         puts "You have made #{stats.incorrectGuessTally} incorrect guesses"
         puts "Guess a letter"
@@ -91,7 +95,7 @@ def start()
 
     if stats.incorrectGuessTally >= 8
         puts "The word was #{stats.chosenWord}"
-    else
+    elsif winCheck == true
         puts "You won!"
     end
 
