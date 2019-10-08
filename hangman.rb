@@ -105,6 +105,7 @@ def start()
         winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
         
     end
+    ##TST
     puts "\e[H\e[2J"
 end
 
