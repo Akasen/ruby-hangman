@@ -5,7 +5,6 @@ class GameStats
         @incorrectGuessTally = incorrectGuessTally
         @previousGuesses = previousGuesses
         @correctGuess = correctGuess
-        puts "Game Start!!"
     end
 end
 
@@ -54,6 +53,7 @@ def loadDictionary(txtContent)
 end
 
 def start()
+    puts "\e[H\e[2J"
     content = File.open('5desk.txt')
     wordList = loadDictionary(content)
 
@@ -61,40 +61,41 @@ def start()
 
     stats = GameStats.new(chooseWord(wordList).chomp.downcase, 0, Array.new, Array.new)
 
-    puts stats.chosenWord
+    #puts stats.chosenWord
     #incorrectGuessTally = 0
 
     ##While statement
     #previousGuesses = Array.new
     #correctGuess = Array.new
+
+    
     winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
-
-    while(stats.incorrectGuessTally <= 8 && winCheck != false )
-
+    
+    while(stats.incorrectGuessTally < 8 && winCheck != false )
         if stats.incorrectGuessTally >= 8
             puts "The word was #{stats.chosenWord}"
         elsif winCheck === false
             puts "You won!"
         end
-
-        puts winCheck
-
-        puts "\nYou have made #{stats.incorrectGuessTally} incorrect guesses"
-        puts "Guess a letter"
+        puts "\n\nYou have made #{stats.incorrectGuessTally} incorrect guesses"
+        puts "\n\nGuess a letter"
+        
         guess = gets.chomp.downcase
 
         #Process user choice
         guessResult = processGuess(stats.chosenWord, guess, stats.previousGuesses)
 
+        puts "\e[H\e[2J"
+
         case guessResult
         when 0
-            puts "Correct Guess"
+            puts "\nCorrect Guess"
             stats.correctGuess.push(guess)
         when 1
-            puts "Wrong Guess"
+            puts "\nWrong Guess"
             stats.incorrectGuessTally += 1
         when 2
-            puts "You already guessed that letter"
+            puts "\nYou already guessed that letter"
         end
 
         if !stats.previousGuesses.include? guess
@@ -104,7 +105,7 @@ def start()
         winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
         
     end
-
+    puts "\e[H\e[2J"
 end
 
 start()
