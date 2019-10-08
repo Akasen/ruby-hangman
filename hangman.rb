@@ -33,7 +33,8 @@ def guessOutcome(chosenWord, correctGuess)
             winCheck.push(false)
         end
     end
-    return winCheck
+    #puts winCheck.include? false
+    return (winCheck.include? false)
 end
 
 def chooseWord(wordList)
@@ -58,7 +59,7 @@ def start()
 
     #chosenWord = chooseWord(wordList).chomp
 
-    stats = GameStats.new(chooseWord(wordList).chomp, 0, Array.new, Array.new)
+    stats = GameStats.new(chooseWord(wordList).chomp.downcase, 0, Array.new, Array.new)
 
     puts stats.chosenWord
     #incorrectGuessTally = 0
@@ -66,13 +67,21 @@ def start()
     ##While statement
     #previousGuesses = Array.new
     #correctGuess = Array.new
+    winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
 
-    while(stats.incorrectGuessTally <= 8)
-        winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
-        puts ""
-        puts "You have made #{stats.incorrectGuessTally} incorrect guesses"
+    while(stats.incorrectGuessTally <= 8 && winCheck != false )
+
+        if stats.incorrectGuessTally >= 8
+            puts "The word was #{stats.chosenWord}"
+        elsif winCheck === false
+            puts "You won!"
+        end
+
+        puts winCheck
+
+        puts "\nYou have made #{stats.incorrectGuessTally} incorrect guesses"
         puts "Guess a letter"
-        guess = gets.chomp
+        guess = gets.chomp.downcase
 
         #Process user choice
         guessResult = processGuess(stats.chosenWord, guess, stats.previousGuesses)
@@ -90,13 +99,10 @@ def start()
 
         if !stats.previousGuesses.include? guess
             stats.previousGuesses.push(guess)
-        end               
-    end
-
-    if stats.incorrectGuessTally >= 8
-        puts "The word was #{stats.chosenWord}"
-    elsif winCheck == true
-        puts "You won!"
+        end
+        
+        winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
+        
     end
 
 end
