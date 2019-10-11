@@ -1,3 +1,5 @@
+require 'yaml'
+
 class GameStats
     attr_accessor :chosenWord, :incorrectGuessTally, :previousGuesses, :correctGuess
     def initialize(chosenWord, incorrectGuessTally, previousGuesses, correctGuess)
@@ -5,6 +7,15 @@ class GameStats
         @incorrectGuessTally = incorrectGuessTally
         @previousGuesses = previousGuesses
         @correctGuess = correctGuess
+    end
+
+    def to_yaml
+        YAML.dump ({
+          :chosenWord => @chosenWord,
+          :incorrectGuessTally => @incorrectGuessTally,
+          :previousGuesses => previousGuesses,
+          :correctGuess => @correctGuess
+        })
     end
 end
 
@@ -39,7 +50,8 @@ end
 def chooseWord(wordList)
     chosenWord = wordList[rand(wordList.length - 1)]
 
-    if chosenWord.length >= 5 && chosenWord.length <= 12
+    puts "The word chosen was #{chosenWord}"
+    if(chosenWord.length > 6 && chosenWord.length < 12)
         return chosenWord
     else
         chooseWord(wordList)
@@ -52,41 +64,45 @@ def loadDictionary(txtContent)
     return wordList
 end
 
+=begin
+def getUserInput()
+    userInput = gets.chomp.downcase
+
+    if userInput.length == 1
+        return userInput
+    elsif userInput == "help"
+        puts "You are playing Hangman"
+        return 
+    elsif userInput == "save"
+        puts "save not functioning"
+    elsif userInput == "load"
+        puts "load not functioning"
+    elsif userInput.length > 1
+        puts "You have put an invalid input"
+    end
+end
+=end
+
 def start()
     puts "\e[H\e[2J"
     content = File.open('5desk.txt')
     wordList = loadDictionary(content)
 
-    #chosenWord = chooseWord(wordList).chomp
-
     stats = GameStats.new(chooseWord(wordList).chomp.downcase, 0, Array.new, Array.new)
-
-    #puts stats.chosenWord
-    #incorrectGuessTally = 0
-
-    ##While statement
-    #previousGuesses = Array.new
-    #correctGuess = Array.new
-
     
     winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
     
     while(stats.incorrectGuessTally < 8 && winCheck != false )
-        if stats.incorrectGuessTally >= 8
-            puts "The word was #{stats.chosenWord}"
-        elsif winCheck === false
-            puts "You won!"
-        end
         puts "\n\nYou have made #{stats.incorrectGuessTally} incorrect guesses"
         puts "\n\nGuess a letter"
         
         guess = gets.chomp.downcase
+        #guess = getUserInput()
 
         #Process user choice
         guessResult = processGuess(stats.chosenWord, guess, stats.previousGuesses)
 
         puts "\e[H\e[2J"
-
         case guessResult
         when 0
             puts "\nCorrect Guess"
@@ -105,8 +121,13 @@ def start()
         winCheck = guessOutcome(stats.chosenWord, stats.correctGuess)
         
     end
+    
+    if stats.incorrectGuessTally >= 8
+        puts "\n\nThe word was #{stats.chosenWord}"
+    elsif winCheck === false
+        puts "\n\nYou won!"
+    end
     ##TST
-    puts "\e[H\e[2J"
 end
 
 start()
